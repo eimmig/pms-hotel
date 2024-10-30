@@ -29,7 +29,6 @@ Para instalar o projeto, siga os passos abaixo:
 ### 1\. Clonar o repositório
 
     git clone https://github.com/eimmig/pms-hotel.git
-    cd pms-hotel
 
 ### 2\. Configurar o Banco de Dados
 
