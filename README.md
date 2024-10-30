@@ -93,3 +93,7 @@ A documentação será gerada utilizando a coleção do Postman também está di
 -------
 
 [Acesso ao Diagrama do Banco de Dados](https://github.com/eimmig/pms-hotel/blob/main/diagrams/pms%20-%20public.png)
+-------
+
+<img title="Home Page" alt="Home Page" src="/images/start-page.png">
+<img title="Amenities" alt="Amenities" src="/images/amenities-add.png">
