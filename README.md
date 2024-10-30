@@ -13,7 +13,7 @@ O projeto é composto por três partes:
 
 1.  **Frontend**: Um aplicativo em Angular 18 localizado na pasta `pms-hotel`.
 2.  **Backend**: Um serviço geral que executa toda a parte lógica de negócio e funcionaldiades da aplicação, em Java 17 com Spring Boot e Maven localizado na pasta `booking`.
-3.  **Serviço de E-mail**: Outro serviço em Java 17 com Spring Boot e Maven localizado na pasta `email`.
+3.  **Serviço de E-mail**: Outro serviço em Java 17 com Spring Boot e Maven localizado na pasta `email` (para que o mesmo funcione é preciso configurar o SMTP).
 
 ### Requisitos
 
