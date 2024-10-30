@@ -1,0 +1,31 @@
+services:
+  postgres:
+    container_name: postgres
+    image: postgres:latest
+    restart: always
+    environment:
+      - POSTGRES_DB=pms
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    ports:
+      - '5432:5432'
+    volumes:
+      - ./postgres-data:/var/lib/postgresql
+    networks:
+        - web
+#  booking:
+#    build:
+#      context: .
+#      dockerfile: Dockerfile
+#    ports:
+#      - "8081:8081"
+#    depends_on:
+#      - postgres
+#    networks:
+#      - web
+networks:
+  web:
+    name: web
+    driver: bridge
+    attachable: true
+    external: true
