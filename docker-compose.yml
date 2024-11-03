@@ -11,17 +11,18 @@ services:
     volumes:
       - ./postgres-data:/var/lib/postgresql
     networks:
-        - web
-#  booking:
-#    build:
-#      context: .
-#      dockerfile: Dockerfile
-#    ports:
-#      - "8081:8081"
-#    depends_on:
-#      - postgres
-#    networks:
-#      - web
+      - web
+
+  angular:
+    build:
+      context: ./pms-hotel
+      dockerfile: Dockerfile
+    ports:
+      - '4200:4200'
+    networks:
+      - web
+    command: npm run start
+
 networks:
   web:
     name: web

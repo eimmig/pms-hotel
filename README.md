@@ -32,7 +32,7 @@ Para instalar o projeto, siga os passos abaixo:
 
 ### 2\. Configurar o Banco de Dados
 
-Certifique-se de ter o PostgreSQL instalado e configurado. Crie um banco de dados para o projeto.
+Certifique-se de ter o PostgreSQL instalado e configurado. Crie um banco de dados para o projeto (É preciso uma database nomeada de ```pms``` e outra de ```mails```).
 
 ### 3\. Executar os Projetos
 
@@ -86,7 +86,7 @@ Documentação
 
 A documentação será gerada utilizando a coleção do Postman também está disponível no repositório.
 
-[Postman Collection](https://www.postman.com/aerospace-candidate-71927754/af40957d-f75e-450d-8b3a-e9a0cac5ddee/share?collection=24093493-33ed3cfa-b143-4b23-ae9e-fd28f2aa7297&target=embed)
+[<img src="https://run.pstmn.io/button.svg" alt="Run In Postman" style="width: 128px; height: 32px;">](https://god.gw.postman.com/run-collection/24093493-33ed3cfa-b143-4b23-ae9e-fd28f2aa7297?action=collection%2Ffork&source=rip_markdown&collection-url=entityId%3D24093493-33ed3cfa-b143-4b23-ae9e-fd28f2aa7297%26entityType%3Dcollection%26workspaceId%3Daf40957d-f75e-450d-8b3a-e9a0cac5ddee)
 -------
 
 [Acesso ao Diagrama de Classes](https://drive.google.com/file/d/1xoKYWodL1DlENsyWWGH5J5UmlHiTKYPZ/view?usp=sharing)
