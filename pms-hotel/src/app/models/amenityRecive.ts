@@ -1,4 +1,4 @@
 export interface AmenityRecive {
     amenitieId: string; 
-    amenitieName: string;
+    name: string;
 }

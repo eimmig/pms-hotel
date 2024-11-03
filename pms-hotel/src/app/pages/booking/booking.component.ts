@@ -160,7 +160,7 @@ export class BookingComponent {
               roomNumber: room.roomNumber,
               amenities: room.amenities.map((amenity: any) => ({
                 amenitieId: amenity.amenitieId,
-                amenitieName: amenity.amenitieName,
+                name: amenity.name,
               })),
             })),
           } as BookingRecive;
@@ -224,7 +224,7 @@ export class BookingComponent {
 
   getAmenities(booking: BookingRecive): string {
     return booking.roomList
-      .map(room => room.amenities.map(amenity => amenity.amenitieName).join(', '))
+      .map(room => room.amenities.map(amenity => amenity.name).join(', '))
       .join(', ');
   }
 
