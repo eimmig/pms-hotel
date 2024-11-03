@@ -50,6 +50,8 @@ import { ToastrModule } from 'ngx-toastr';
   `],
 })
 export class AppComponent {
+
+  title = 'PMS Hotel';
   
   collapsed = signal(false);
 

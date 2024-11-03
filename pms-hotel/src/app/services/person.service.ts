@@ -36,4 +36,8 @@ export class PersonService {
   deletePerson(id: string): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/person/${id}`);
   }
+
+  getApiUrl(): string {
+    return this.apiUrl;
+  }
 }
