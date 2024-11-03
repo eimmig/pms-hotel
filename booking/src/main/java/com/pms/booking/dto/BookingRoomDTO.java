@@ -16,5 +16,5 @@ public record BookingRoomDTO(@NotNull(message = "UUID da reserva não informado.
                              String status,
                              Date startDate,
                              Date endDate,
-                             List<AmenitiesDTO> amenities) {
+                             List<AmenitiesListDTO> amenities) {
 }

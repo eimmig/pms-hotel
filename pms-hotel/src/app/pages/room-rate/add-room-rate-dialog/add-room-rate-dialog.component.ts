@@ -9,20 +9,7 @@ import { FormGroup, FormBuilder, Validators, ReactiveFormsModule } from '@angula
 import { MatSelectModule } from '@angular/material/select';
 import { Observable } from 'rxjs';
 import { RoomRateService } from '../../../services/room-rate.service';
-
-interface RoomRate {
-  id?: string;
-  name: string;
-  mondayRate: number;
-  tuesdayRate: number;
-  wednesdayRate: number;
-  thursdayRate: number;
-  fridayRate: number;
-  saturdayRate: number;
-  sundayRate: number;
-  garageIncluded: boolean;
-  roomRateId: string;
-}
+import { RoomRate } from '../../../models/roomRate';
 
 @Component({
   selector: 'app-add-room-rate-dialog',
@@ -206,7 +193,7 @@ export class AddRoomRateDialogComponent implements OnInit {
     if (this.roomRateForm.invalid) return;
     const roomRateData = { ...this.roomRateForm.value, id: this.data?.id };
 
-    this.loading = true; // Inicia o carregamento
+    this.loading = true;
     const roomRateObservable: Observable<RoomRate> = roomRateData.id
       ? this.roomRateService.editRoomRate(roomRateData)
       : this.roomRateService.addRoomRate(roomRateData);

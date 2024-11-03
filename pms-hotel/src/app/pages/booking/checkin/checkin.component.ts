@@ -11,29 +11,7 @@ import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { MatDialog } from '@angular/material/dialog';
 import { BookingService } from '../../../services/booking.service';
-
-
-interface AmenityRecive {
-  amenitieId: string; 
-  amenitieName: string;
-}
-
-interface RoomRecive {
-  roomId: string;
-  roomNumber: string;
-  amenities: AmenityRecive[];
-}
-
-interface BookingRecive {
-  id: string;
-  startDate: string;
-  endDate: string;
-  personId: string; 
-  personName: string;
-  status: string;
-  statusName: string;
-  roomList: RoomRecive[];
-}
+import { BookingRecive } from '../../../models/bookingRecive';
 
 @Component({
   selector: 'app-Checkin',
@@ -75,12 +53,12 @@ interface BookingRecive {
         <!-- Datas da Reserva -->
         <ng-container matColumnDef="startDate">
           <th mat-header-cell *matHeaderCellDef mat-sort-header class="text-center">Data de Início</th>
-          <td mat-cell *matCellDef="let booking">{{ booking.startDate }}</td>
+          <td mat-cell *matCellDef="let booking">{{ booking.startDate | date: 'dd/MM/yyyy' }}</td>
         </ng-container>
 
         <ng-container matColumnDef="endDate">
           <th mat-header-cell *matHeaderCellDef mat-sort-header class="text-center">Data de Término</th>
-          <td mat-cell *matCellDef="let booking">{{ booking.endDate }}</td>
+          <td mat-cell *matCellDef="let booking">{{ booking.endDate | date: 'dd/MM/yyyy' }}</td>
         </ng-container>
 
         <!-- Quartos -->
@@ -208,6 +186,7 @@ export class CheckinComponent {
       const currentHour = new Date().getHours();
       
       if (currentHour >= 14) {
+        if (booking.id !== undefined) {
           this.bookingService.checkinBooking(booking.id).subscribe(
               (response) => {
                   alert('Checkin realizado com sucesso!');
@@ -217,6 +196,9 @@ export class CheckinComponent {
                   alert('Erro ao realizar checkin. Tente novamente.');
               }
           );
+        } else {
+            alert('ID da reserva não está disponível.');
+        }
       } else {
         alert('Não é possível realizar um checkin antes das 14h.');
       }

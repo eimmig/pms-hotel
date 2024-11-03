@@ -47,9 +47,9 @@ public class AmenitiesController extends GenericController<AmenitiesModel, UUID,
     }
 
     @GetMapping("/toBooking")
-    public ResponseEntity<List<AmenitieReciveDTO>> getAllBooking() {
+    public ResponseEntity<List<AmenitiesDTO>> getAllBooking() {
 
-        List<AmenitieReciveDTO> list = amenitiesService.getAllBooking();
+        List<AmenitiesDTO> list = amenitiesService.getAllBooking();
 
         if (list != null) {
             return ResponseEntity.ok(list);

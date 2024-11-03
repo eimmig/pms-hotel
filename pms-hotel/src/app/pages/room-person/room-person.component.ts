@@ -12,16 +12,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { AddPersonDialogComponent } from './add-person-dialog/add-person-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
 import { PersonService } from '../../services/person.service';
-
-interface Person {
-  id?: string;
-  name: string;
-  document: string;
-  phoneNumber: string;
-  email: string;
-  birthDate: string;
-  documentTypeId: string;
-}
+import { Person } from '../../models/person';
 
 @Component({
   selector: 'app-room-person',
@@ -73,7 +64,7 @@ interface Person {
 
         <ng-container matColumnDef="birthDate">
           <th mat-header-cell *matHeaderCellDef mat-sort-header class="text-center">Data de Nascimento</th>
-          <td mat-cell *matCellDef="let person">{{ person.birthDate }}</td>
+          <td mat-cell *matCellDef="let person">{{ person.birthDate | date: 'dd/MM/yyyy' }}</td>
         </ng-container>
 
         <ng-container matColumnDef="actions">
@@ -165,7 +156,7 @@ export class RoomPersonComponent {
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
         this.originalData.push(result);
-        this.dataSource.data = this.originalData;  // Atualiza dataSource com o novo registro
+        this.dataSource.data = this.originalData; 
       }
     });
   }

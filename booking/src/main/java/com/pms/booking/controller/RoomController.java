@@ -26,20 +26,14 @@ public class RoomController extends GenericController<RoomModel, UUID, RoomDTO> 
         this.roomService = roomService;
     }
 
-    @GetMapping("/checkAvailability/{id}")
-    public ResponseEntity<Boolean> checkAvailability(@PathVariable UUID id) {
-        boolean isAvailable = roomService.checkAvailability(id);
-        return ResponseEntity.ok(isAvailable);
-    }
-
     @GetMapping("/available")
-    public ResponseEntity<List<RoomReciveListDTO>> getAvailableRooms(@RequestParam String startDate, @RequestParam String endDate) {
+    public ResponseEntity<List<RoomReciveListDTO>> getAvailableRooms(@RequestParam String startDate, @RequestParam String endDate, @RequestParam(required = false) UUID bookingId) {
         if (startDate == null || endDate == null) {
             return ResponseEntity.badRequest().body(null);
         }
 
         try {
-            List<RoomReciveListDTO> availableRooms = roomService.getAllBooking(LocalDate.parse(startDate), LocalDate.parse(endDate));
+            List<RoomReciveListDTO> availableRooms = roomService.getAllBooking(LocalDate.parse(startDate), LocalDate.parse(endDate), bookingId);
             return ResponseEntity.ok(availableRooms);
         } catch (Exception e) {
             e.printStackTrace();

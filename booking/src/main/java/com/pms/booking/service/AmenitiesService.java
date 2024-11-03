@@ -134,11 +134,11 @@ public class AmenitiesService extends GenericService<AmenitiesModel, UUID, Ameni
         return amenitiesRepository.findAllWithValue();
     }
 
-    public List<AmenitieReciveDTO> getAllBooking() {
+    public List<AmenitiesDTO> getAllBooking() {
         List<AmenitiesModel> amenitiesModels = amenitiesRepository.findAll();
 
         return amenitiesModels.stream()
-                .map(am -> new AmenitieReciveDTO(am.getId(), am.getName()))
+                .map(am -> new AmenitiesDTO(am.getId(), am.getName()))
                 .collect(Collectors.toList());
     }
 

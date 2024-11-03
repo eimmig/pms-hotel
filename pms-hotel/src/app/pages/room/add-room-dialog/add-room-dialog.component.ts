@@ -7,24 +7,12 @@ import { FormGroup, FormBuilder, Validators, ReactiveFormsModule } from '@angula
 import { MatSelectModule } from '@angular/material/select';
 import { Observable } from 'rxjs';
 import { RoomService } from '../../../services/room.service';
-
-interface Room {
-  id?: string;
-  number: string;
-  roomTypeId: string;
-  roomTypeName: number;
-  status: string;
-  statusDisplay: string;
-}
-
-interface RoomType {
-  id: string
-  name : string
-}
+import { Room } from '../../../models/room';
+import { RoomTypeIdName } from '../../../models/roomTypeIdName';
 
 interface Status {
-  id: string
-  name : string
+  id: string;
+  name: string;
 }
 
 @Component({
@@ -49,16 +37,16 @@ interface Status {
 
         <mat-form-field appearance="fill">
           <mat-label>Status</mat-label>
-          <mat-select formControlName="statusId" required>
+          <mat-select formControlName="status" required>
             <mat-option *ngFor="let stats of status" [value]="stats.id">
               {{ stats.name }}
             </mat-option>
           </mat-select>
-          <mat-error *ngIf="roomForm.get('roomTypeId')?.hasError('required')">O status não pode estar em branco.</mat-error>
+          <mat-error *ngIf="roomForm.get('status')?.hasError('required')">O status não pode estar em branco.</mat-error>
         </mat-form-field>
 
         <mat-form-field appearance="fill">
-          <mat-label>categoria</mat-label>
+          <mat-label>Categoria</mat-label>
           <mat-select formControlName="roomTypeId" required>
             <mat-option *ngFor="let roomType of roomTypes" [value]="roomType.id">
               {{ roomType.name }}
@@ -69,7 +57,7 @@ interface Status {
 
         <div mat-dialog-actions class="div-btns">
           <button mat-button color="warn" (click)="onCancel()" class="btn-cancelar">Cancelar</button>
-          <button mat-button class="btn-adicionar" type="submit" [disabled]="loading || roomForm.invalid">Salvar</button>
+          <button mat-button class="btn-adicionar" type="submit" [disabled]="roomForm.invalid">Salvar</button>
         </div>
       </form>
     </mat-dialog-content>
@@ -119,8 +107,7 @@ interface Status {
 export class AddRoomDialogComponent implements OnInit {
   roomForm!: FormGroup;
   loading: boolean = false;
-  roomTypes: RoomType[] = [];
-
+  roomTypes: RoomTypeIdName[] = [];
   status: Status[] = [
     { id: 'A', name: 'Disponível' },
     { id: 'O', name: 'Ocupado' },
@@ -138,9 +125,8 @@ export class AddRoomDialogComponent implements OnInit {
   ngOnInit(): void {
     this.roomForm = this.fb.group({
       number: ['', Validators.required],
-      abbreviation: ['', Validators.required],
       roomTypeId: [null, Validators.required],
-      maxPerson: ['', Validators.required]
+      status: ['', Validators.required]
     });
 
     this.loadRoomTypes();
@@ -148,15 +134,15 @@ export class AddRoomDialogComponent implements OnInit {
     if (this.data) {
       this.roomForm.patchValue({
         number: this.data.number,
-        abbreviation: this.data.status,
-        roomTypeId: this.data.roomTypeId
+        roomTypeId: this.data.roomTypeId,
+        status: this.data.status,
       });
     }
   }
 
   loadRoomTypes() {
     this.roomService.getRoomTypesSelect().subscribe(
-      (roomTypes: RoomType[]) => {
+      (roomTypes: RoomTypeIdName[]) => {
         this.roomTypes = roomTypes; 
       },
       (error) => {
@@ -165,8 +151,6 @@ export class AddRoomDialogComponent implements OnInit {
       }
     );
   }
-
-  
 
   onSubmit() {
     if (this.roomForm.invalid) return;
@@ -184,9 +168,6 @@ export class AddRoomDialogComponent implements OnInit {
       },
       (error) => {
         alert('Erro ao salvar quarto. Tente novamente.');
-        
-      },
-      () => {
       }
     );
   }

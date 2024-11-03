@@ -2,67 +2,12 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
+import { Booking } from '../models/booking';
+import { BookingRecive } from '../models/bookingRecive';
+import { AmenityListRecive } from '../models/amenityListRecive';
+import { RoomListRecive } from '../models/roomListRecive';
+import { PersonListRecive } from '../models/personListRecive';
 
-
-interface Amenity {
-  amenitieId: string; 
-}
-
-interface Room {
-  roomId: string;
-  amenities: Amenity[];
-}
-
-interface Booking {
-  id?: string;
-  startDate: string;
-  endDate: string;
-  personId: string; 
-  status: string;
-  roomList: Room[];
-}
-
-interface AmenityRecive {
-  amenitieId: string; 
-  amenitieName: string;
-}
-
-interface PersonRecive {
-  personId: string; 
-  personName: string;
-}
-
-interface RoomRecive {
-  roomId: string;
-  roomNumer: string;
-  amenities: AmenityRecive[];
-}
-
-interface BookingRecive {
-  id?: string;
-  startDate: string;
-  endDate: string;
-  personId: string; 
-  personName: string;
-  status: string;
-  statusName: string;
-  roomList: RoomRecive[];
-}
-
-interface AmenityListRecive {
-  amenitieId: string; 
-  amenitieName: string;
-}
-
-interface RoomListRecive {
-  roomId: string;
-  roomNumber: string;
-}
-
-interface PersonListRecive {
-  personId: string;
-  personName: string;
-}
 
 @Injectable({
   providedIn: 'root'
@@ -85,11 +30,11 @@ export class BookingService {
   }
 
   getAllBookingCheckin(): Observable<BookingRecive[]> {
-    return this.http.get<BookingRecive[]>(`${this.apiUrl}/booking/getAllBookingCheckout`);
+    return this.http.get<BookingRecive[]>(`${this.apiUrl}/booking/getAllBookingCheckin`);
   }
 
   getAllBookingCheckout(): Observable<BookingRecive[]> {
-    return this.http.get<BookingRecive[]>(`${this.apiUrl}/booking/getAllBookingCheckin`);
+    return this.http.get<BookingRecive[]>(`${this.apiUrl}/booking/getAllBookingCheckout`);
   }
 
   deleteBooking(id: string): Observable<void> {
@@ -100,8 +45,8 @@ export class BookingService {
     return this.http.get<AmenityListRecive[]>(`${this.apiUrl}/amenities/toBooking`);
   }
 
-  getAvailableRooms(startDate: string, endDate: string): Observable<RoomListRecive[]> {
-    const params = { startDate, endDate };
+  getAvailableRooms(startDate: string, endDate: string, bookingId: string): Observable<RoomListRecive[]> {
+    const params = { startDate, endDate, bookingId };
     return this.http.get<RoomListRecive[]>(`${this.apiUrl}/room/available`, { params });
   }
 

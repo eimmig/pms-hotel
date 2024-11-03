@@ -49,15 +49,8 @@ public class RoomService extends GenericService<RoomModel, UUID, RoomDTO> {
         }
     }
 
-    //TODO Ajustar para que seja considerado também o período de reservas, dessa maneira é possivel trabalhar com locação para hospede sem reserva.
-    public boolean checkAvailability(UUID roomId) {
-        return repository.findById(roomId)
-                .map(room -> ERoomStatus.AVAILABLE.getCode().equals(room.getStatus()))
-                .orElse(false);
-    }
-
-    public List<RoomReciveListDTO> getAllBooking(LocalDate startDate, LocalDate endDate) {
-        List<RoomModel> roomModels = roomRepository.findAllWithDate(startDate, endDate);
+    public List<RoomReciveListDTO> getAllBooking(LocalDate startDate, LocalDate endDate,UUID bookingId) {
+        List<RoomModel> roomModels = roomRepository.findAllWithDate(startDate, endDate, bookingId);
 
         return roomModels.stream()
                 .map(room -> new RoomReciveListDTO(room.getId(), room.getNumber()))

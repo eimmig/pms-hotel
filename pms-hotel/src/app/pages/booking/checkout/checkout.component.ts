@@ -12,46 +12,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { AddCheckoutDialogComponent } from './add-checkout-dialog/add-checkout-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
 import { BookingService } from '../../../services/booking.service';
-
-interface Amenity {
-  amenitieId: string; 
-}
-
-interface Room {
-  roomId: string;
-  amenities: Amenity[];
-}
-
-interface Booking {
-  id?: string;
-  startDate: string;
-  endDate: string;
-  personId: string; 
-  status: string;
-  roomList: Room[];
-}
-
-interface AmenityRecive {
-  amenitieId: string; 
-  amenitieName: string;
-}
-
-interface RoomRecive {
-  roomId: string;
-  roomNumber: string;
-  amenities: AmenityRecive[];
-}
-
-interface BookingRecive {
-  id?: string;
-  startDate: string;
-  endDate: string;
-  personId: string; 
-  personName: string;
-  status: string;
-  statusName: string;
-  roomList: RoomRecive[];
-}
+import { BookingRecive } from '../../../models/bookingRecive';
 
 @Component({
   selector: 'app-Checkout',
@@ -93,12 +54,12 @@ interface BookingRecive {
         <!-- Datas da Reserva -->
         <ng-container matColumnDef="startDate">
           <th mat-header-cell *matHeaderCellDef mat-sort-header class="text-center">Data de Início</th>
-          <td mat-cell *matCellDef="let booking">{{ booking.startDate }}</td>
+          <td mat-cell *matCellDef="let booking">{{ booking.startDate | date: 'dd/MM/yyyy' }}</td>
         </ng-container>
 
         <ng-container matColumnDef="endDate">
           <th mat-header-cell *matHeaderCellDef mat-sort-header class="text-center">Data de Término</th>
-          <td mat-cell *matCellDef="let booking">{{ booking.endDate }}</td>
+          <td mat-cell *matCellDef="let booking">{{ booking.endDate | date: 'dd/MM/yyyy' }}</td>
         </ng-container>
 
         <!-- Quartos -->
@@ -120,7 +81,7 @@ interface BookingRecive {
         <ng-container matColumnDef="actions">
           <th mat-header-cell *matHeaderCellDef class="text-center" style="width: 180px;">Ações</th>
           <td mat-cell *matCellDef="let booking" class="text-center" style="width: 180px;">
-            <button mat-button (click)="openAddCheckout(booking)" [disabled]="booking.status === 'E'">Checkout</button>
+            <button mat-button (click)="openAddCheckout(booking)" [disabled]="booking.status !== 'E'">Checkout</button>
           </td>
         </ng-container>
 
@@ -218,7 +179,7 @@ export class CheckoutComponent {
   openAddCheckout(booking: BookingRecive) {
     const dialogRef = this.dialog.open(AddCheckoutDialogComponent, {
       width: '400px',
-      data: booking // Passa a reserva para o diálogo
+      data: booking
     });
 
     dialogRef.afterClosed().subscribe(result => {

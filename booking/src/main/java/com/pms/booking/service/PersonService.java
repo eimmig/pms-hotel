@@ -4,6 +4,7 @@ import com.pms.booking.dto.PersonDTO;
 import com.pms.booking.dto.PersonReciveDTO;
 import com.pms.booking.dto.RoomReciveListDTO;
 import com.pms.booking.enums.EDocumentType;
+import com.pms.booking.exception.BusinessException;
 import com.pms.booking.model.PersonModel;
 import com.pms.booking.model.RoomModel;
 import com.pms.booking.repository.PersonRepository;
@@ -47,11 +48,7 @@ public class PersonService extends GenericService<PersonModel, UUID, PersonDTO> 
     public PersonModel save(PersonDTO personDTO) throws RuntimeException {
         PersonModel personModel = convertToModel(personDTO, null);
 
-        if (!DocumentValidator.validateDocument(personModel.getDocument(), personModel.getDocumentType())) {
-            throw new ValidationException("O documento informado não é válido!");
-        }
-
-        return repository.save(personModel);
+        return validateAndSavePersonData(personModel);
     }
 
     @Override
@@ -60,13 +57,23 @@ public class PersonService extends GenericService<PersonModel, UUID, PersonDTO> 
         if (repository.existsById(id)) {
             PersonModel personModel = convertToModel(personDTO, id);
 
-            if (!DocumentValidator.validateDocument(personModel.getDocument(), personModel.getDocumentType())) {
-                throw new ValidationException("O documento informado não é válido!");
-            }
-
-            return repository.save(personModel);
+            return validateAndSavePersonData(personModel);
         }
         throw new RuntimeException("Item não encontrado");
+    }
+
+    private PersonModel validateAndSavePersonData(PersonModel personModel) {
+        if (!DocumentValidator.validateDocument(personModel.getDocument(), personModel.getDocumentType())) {
+            throw new ValidationException("O documento informado não é válido!");
+        }
+
+        if (personRepository.existsByDocumentAndDocumentType(personModel.getDocument(), personModel.getDocumentType())) {
+            throw new BusinessException("Documento já cadastrado na base de dados");
+        } else if (personRepository.existsByEmail(personModel.getEmail())) {
+            throw  new BusinessException("Email já cadastrado na base de dados");
+        }
+
+        return repository.save(personModel);
     }
 
     public Optional<PersonModel> getPerson(String search) {

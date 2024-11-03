@@ -30,4 +30,7 @@ public interface PersonRepository extends JpaRepository<PersonModel, UUID> {
             "WHERE b.status = 'E'",
             nativeQuery = true)
     List<PersonModel> getForCheckout();
+
+    Boolean existsByDocumentAndDocumentType(String document, EDocumentType documentType);
+    Boolean existsByEmail(String email);
 }

@@ -7,41 +7,12 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatTabsModule } from '@angular/material/tabs';
 import { FormGroup, FormBuilder, Validators, ReactiveFormsModule } from '@angular/forms';
 import { MatSelectModule } from '@angular/material/select';
-import { Observable } from 'rxjs';
+import { debounceTime, Observable } from 'rxjs';
 import { BookingService } from '../../../services/booking.service';
-
-interface Amenity {
-  amenitieId: string; 
-}
-
-interface Room {
-  roomId: string;
-  amenities: Amenity[];
-}
-
-interface Booking {
-  id?: string;
-  startDate: string;
-  endDate: string;
-  personId: string; 
-  status: string;
-  roomList: Room[];
-}
-
-interface AmenityRecive {
-  amenitieId: string; 
-  amenitieName: string;
-}
-
-interface RoomRecive {
-  roomId: string;
-  roomNumber: string;
-}
-
-interface PersonRecive {
-  personId: string;
-  personName: string;
-}
+import { Booking } from '../../../models/booking';
+import { PersonListRecive } from '../../../models/personListRecive';
+import { RoomListRecive } from '../../../models/roomListRecive';
+import { AmenityListRecive } from '../../../models/amenityListRecive';
 
 @Component({
   selector: 'app-add-booking-dialog',
@@ -60,8 +31,6 @@ interface PersonRecive {
     <mat-dialog-content class="dialog-content">
       <form [formGroup]="bookingForm" (ngSubmit)="onSubmit()" class="form-full">
         <mat-tab-group class="full-width-tab-group">
-          
-          <!-- Aba para Informações Básicas -->
           <mat-tab label="Informações Básicas">
             <div class="tab-content">
               <mat-form-field appearance="fill">
@@ -71,7 +40,6 @@ interface PersonRecive {
                   A data inicial é obrigatória.
                 </mat-error>
               </mat-form-field>
-
               <mat-form-field appearance="fill">
                 <mat-label>Data Final</mat-label>
                 <input matInput type="date" formControlName="endDate" required />
@@ -79,7 +47,6 @@ interface PersonRecive {
                   A data final é obrigatória.
                 </mat-error>
               </mat-form-field>
-
               <mat-form-field appearance="fill">
                 <mat-label>Pessoa</mat-label>
                 <mat-select formControlName="personId" required>
@@ -93,7 +60,6 @@ interface PersonRecive {
               </mat-form-field>
             </div>
           </mat-tab>
-
           <mat-tab label="Quartos e Extras">
             <div class="tab-content">
               <mat-form-field appearance="fill">
@@ -107,14 +73,12 @@ interface PersonRecive {
                   A seleção de quarto é obrigatória.
                 </mat-error>
               </mat-form-field>
-
-              <!-- Seleção de Extras -->
               <mat-form-field appearance="fill">
                 <mat-label>Selecione o Extra</mat-label>
                 <mat-select formControlName="amenities" required>
                   <mat-option value="none">Sem extra</mat-option>
                   <mat-option *ngFor="let amenity of amenityList" [value]="amenity.amenitieId">
-                    {{ amenity.amenitieName }}
+                    {{ amenity.name }}
                   </mat-option>
                 </mat-select>
                 <mat-error *ngIf="bookingForm.get('amenities')?.hasError('required')">
@@ -124,7 +88,6 @@ interface PersonRecive {
             </div>
           </mat-tab>
         </mat-tab-group>
-
         <div mat-dialog-actions class="div-btns">
           <button mat-button color="warn" (click)="onCancel()" class="btn-cancelar">Cancelar</button>
           <button mat-button class="btn-adicionar" type="submit" [disabled]="loading || bookingForm.invalid">
@@ -145,18 +108,15 @@ interface PersonRecive {
       align-items: stretch;
       padding: 20px;
     }
-
     .form-full {
       display: flex;
       flex-direction: column;
       flex-grow: 1;
       justify-content: space-between; 
     }
-
     .full-width-tab-group {
       flex-grow: 1;
     }
-
     .tab-content {
       display: flex;
       flex-direction: column;
@@ -164,18 +124,15 @@ interface PersonRecive {
       flex-grow: 1; 
       overflow: hidden;
     }
-
     mat-tab-body {
       display: flex;
       flex-direction: column;
       flex-grow: 1; 
       overflow: hidden;
     }
-
     mat-form-field {
       width: 100%;
     }
-
     .btn-cancelar {
       background-color: red;
       padding: 5px;
@@ -188,7 +145,6 @@ interface PersonRecive {
     .btn-cancelar:hover {
       background-color: #ff3333;
     }
-
     .btn-adicionar {
       background-color: green;
       padding: 5px;
@@ -201,7 +157,6 @@ interface PersonRecive {
     .btn-adicionar:hover {
       background-color: #00cc00;
     }
-
     .div-btns {
       display: flex;
       justify-content: space-between;
@@ -212,10 +167,9 @@ interface PersonRecive {
 export class AddBookingDialogComponent implements OnInit {
   bookingForm!: FormGroup;
   loading: boolean = false;
-  
-  personList: PersonRecive[] = [];
-  roomList: RoomRecive[] = [];
-  amenityList: AmenityRecive[] = [];
+  personList: PersonListRecive[] = [];
+  roomList: RoomListRecive[] = [];
+  amenityList: AmenityListRecive[] = [];
 
   constructor(
     public dialogRef: MatDialogRef<AddBookingDialogComponent>,
@@ -239,47 +193,38 @@ export class AddBookingDialogComponent implements OnInit {
 
     this.loadPeople();
     this.loadAmenities();
+    this.loadRooms();
 
-    this.bookingForm.get('startDate')?.valueChanges.subscribe(() => {
+    this.bookingForm.get('startDate')?.valueChanges.pipe(debounceTime(300)).subscribe(() => {
       this.loadRooms();
     });
-    this.bookingForm.get('endDate')?.valueChanges.subscribe(() => {
+    this.bookingForm.get('endDate')?.valueChanges.pipe(debounceTime(300)).subscribe(() => {
       this.loadRooms();
     });
   }
 
   loadPeople(): void {
-    this.bookingService.getPeople().subscribe((people: PersonRecive[]) => {
+    this.bookingService.getPeople().subscribe((people: PersonListRecive[]) => {
       this.personList = people;
     });
   }
 
   loadRooms(): void {
     const { startDate, endDate } = this.bookingForm.value;
-  
+
+    if (!startDate || !endDate) return;
+
+    const bookingId = this.data?.id || "";
     const start = new Date(startDate);
     const end = new Date(endDate);
-  
-    if (!startDate || !endDate) {
-      return;
-    }
-  
-    if (isNaN(start.getTime()) || isNaN(end.getTime())) {
-      return;
-    }
-  
-    if (start >= end) {
-      return;
-    }
-  
-    this.bookingService.getAvailableRooms(startDate, endDate).subscribe((rooms: RoomRecive[]) => {
+    if (!startDate || !endDate || isNaN(start.getTime()) || isNaN(end.getTime()) || start >= end) return;
+    this.bookingService.getAvailableRooms(startDate, endDate, bookingId).subscribe((rooms: RoomListRecive[]) => {
       this.roomList = rooms;
     });
   }
-  
 
   loadAmenities(): void {
-    this.bookingService.getAmenities().subscribe((amenities: AmenityRecive[]) => {
+    this.bookingService.getAmenities().subscribe((amenities: AmenityListRecive[]) => {
       this.amenityList = amenities;
     });
   }
@@ -290,18 +235,17 @@ export class AddBookingDialogComponent implements OnInit {
     const bookingData = { ...this.bookingForm.value, id: this.data?.id };
   
     const transformedObject = {
-      startDate: this.setTime(new Date(bookingData.startDate), 14, 0), 
-      endDate: this.setTime(new Date(bookingData.endDate), 12, 0), 
+      id: bookingData?.id || "",
+      startDate: this.setTime(new Date(`${bookingData.startDate}T00:00:00`), 14, 0).toISOString(),
+      endDate: this.setTime(new Date(`${bookingData.endDate}T00:00:00`), 12, 0).toISOString(),
       personId: bookingData.personId,
       status: "P",
       roomList: [
         {
           roomId: bookingData.roomId,
           amenities: bookingData.amenities !== "none" ? [
-            {
-              amenitieId: bookingData.amenities 
-            }
-          ] : [] 
+            { amenitieId: bookingData.amenities }
+          ] : []
         }
       ]
     };
@@ -318,19 +262,17 @@ export class AddBookingDialogComponent implements OnInit {
         window.location.reload();
         this.dialogRef.close(response);
       },
-      (error) => {
+      () => {
         alert('Erro ao salvar reserva. Tente novamente.');
         this.loading = false;
       }
     );
   }
-  
-  setTime(date: Date, hours: number, minutes: number): string {
-    date.setHours(hours, minutes, 0, 0); 
-    return date.toISOString(); 
+
+  setTime(date: Date, hours: number, minutes: number): Date {
+    date.setHours(hours, minutes, 0, 0);
+    return date;
   }
-  
-  
 
   onCancel(): void {
     this.dialogRef.close();

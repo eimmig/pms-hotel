@@ -69,7 +69,7 @@ public class BookingRoomService extends GenericService<BookingRoomModel, UUID, B
             bookingRoomModel = repository.save(bookingRoomModel);
 
             if (!bookingRoomDTO.amenities().isEmpty()) {
-                for (AmenitiesDTO amenitiesDTO : bookingRoomDTO.amenities()) {
+                for (AmenitiesListDTO amenitiesDTO : bookingRoomDTO.amenities()) {
                     BookingRoomAmenitiesDTO bookingRoomAmenitiesDTO = new BookingRoomAmenitiesDTO(null, bookingRoomModel.getId(), amenitiesDTO.amenitieId());
                     bookingRoomAmenitiesService.save(bookingRoomAmenitiesDTO);
                 }

@@ -7,20 +7,8 @@ import { FormGroup, FormBuilder, Validators, ReactiveFormsModule } from '@angula
 import { MatSelectModule } from '@angular/material/select';
 import { Observable } from 'rxjs';
 import { RoomTypeService } from '../../../services/room-type.service';
-
-interface RoomType {
-  id?: number;
-  name: string;
-  abbreviation: string;
-  maxPersons: number;
-  rateId: string;
-  rateName: string;
-}
-
-interface Rate {
-  id: string
-  name : string
-}
+import { RoomType } from '../../../models/roomType';
+import { RateIdName } from '../../../models/rateIdName';
 
 @Component({
   selector: 'app-add-room-type-dialog',
@@ -116,7 +104,7 @@ interface Rate {
 export class AddRoomTypeDialogComponent implements OnInit {
   roomTypeForm!: FormGroup;
   loading: boolean = false;
-  rates: Rate[] = []; // Inicializa vazio para ser populado pela requisição
+  rates: RateIdName[] = [];
 
   constructor(
     public dialogRef: MatDialogRef<AddRoomTypeDialogComponent>,
@@ -147,7 +135,7 @@ export class AddRoomTypeDialogComponent implements OnInit {
 
   loadRates() {
     this.roomTypeService.getRatesSelect().subscribe(
-      (rates: Rate[]) => {
+      (rates: RateIdName[]) => {
         this.rates = rates; 
       },
       (error) => {

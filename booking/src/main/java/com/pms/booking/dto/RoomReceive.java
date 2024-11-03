@@ -13,5 +13,5 @@ public record RoomReceive(
         String roomNumber,
 
         @NotNull(message = "A lista de amenidades não pode ser nula.")
-        List<AmenityReceive> amenities
+        List<AmenitiesDTO> amenities
 ) {}

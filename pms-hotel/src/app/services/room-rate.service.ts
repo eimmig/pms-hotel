@@ -2,21 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
-
-interface RoomRate {
-  id?: string;
-  name: string;
-  mondayRate: number;
-  tuesdayRate: number;
-  wednesdayRate: number;
-  thursdayRate: number;
-  fridayRate: number;
-  saturdayRate: number;
-  sundayRate: number;
-  garageIncluded: boolean;
-  roomRateId: string;
-}
-
+import { RoomRate } from '../models/roomRate';
 
 
 @Injectable({

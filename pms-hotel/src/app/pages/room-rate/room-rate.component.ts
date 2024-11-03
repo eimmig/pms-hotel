@@ -12,20 +12,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { AddRoomRateDialogComponent } from './add-room-rate-dialog/add-room-rate-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
 import { RoomRateService } from '../../services/room-rate.service';
-
-interface RoomRate {
-  id?: string;
-  name: string;
-  mondayRate: number;
-  tuesdayRate: number;
-  wednesdayRate: number;
-  thursdayRate: number;
-  fridayRate: number;
-  saturdayRate: number;
-  sundayRate: number;
-  garageIncluded: boolean;
-  roomRateId: string;
-}
+import { RoomRate } from '../../models/roomRate';
 
 @Component({
   selector: 'app-room-rate',

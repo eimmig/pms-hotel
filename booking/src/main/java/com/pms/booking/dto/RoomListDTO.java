@@ -8,6 +8,6 @@ import java.util.UUID;
 public record RoomListDTO(
         @NotNull(message = "O ID do quarto é obrigatório.")
         UUID roomId,
-        List<AmenitiesDTO> amenities
+        List<AmenitiesListDTO> amenities
 ) {
 }

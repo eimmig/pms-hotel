@@ -2,16 +2,8 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
+import { Person } from '../models/person';
 
-interface Person {
-  id?: string;
-  name: string;
-  document: string;
-  phoneNumber: string;
-  email: string;
-  birthDate: string;
-  documentTypeId: string;
-}
 
 @Injectable({
   providedIn: 'root'

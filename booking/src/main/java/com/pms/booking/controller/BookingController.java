@@ -24,16 +24,6 @@ public class BookingController extends GenericController<BookingModel, UUID, Boo
         this.bookingService = bookingService;
     }
 
-    @PostMapping("/confirmBooking")
-    public ResponseEntity<String> confirmBooking(@RequestBody @Valid BookingRoomDTO bookingRoomDTO) {
-        try {
-            bookingService.confirmBooking(bookingRoomDTO);
-            return ResponseEntity.status(HttpStatus.CREATED).body("Reserva quarto efetivado com sucesso.");
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Erro ao efetivar reserva quarto: " + e.getMessage());
-        }
-    }
-
     @PostMapping("/cancelBooking")
     public ResponseEntity<String> confirmBooking(@RequestBody @Valid BookingCancelDTO bookingCancelDTO) {
         try {

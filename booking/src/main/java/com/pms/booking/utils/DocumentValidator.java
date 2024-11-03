@@ -16,32 +16,33 @@ public class DocumentValidator {
         };
     }
 
-    // Validação de CPF
-    private static boolean validateCPF(String cpf) {
-        if (cpf.length() != 11 || !cpf.matches("\\d{11}")) {
+    public static boolean validateCPF(String cpf) {
+        cpf = cpf.replaceAll("[^0-9]", "");
+
+        if (cpf.length() != 11) {
             return false;
         }
 
+        if (cpf.chars().distinct().count() == 1) {
+            return false;
+        }
+
+        int firstDigit = calculateDigit(cpf, 9);
+        if (firstDigit != Character.getNumericValue(cpf.charAt(9))) {
+            return false;
+        }
+
+        int secondDigit = calculateDigit(cpf, 10);
+        return secondDigit == Character.getNumericValue(cpf.charAt(10));
+    }
+
+    private static int calculateDigit(String cpf, int length) {
         int sum = 0;
-        int weight = 10;
-
-        // Validação do primeiro dígito verificador
-        for (int i = 0; i < 9; i++) {
-            sum += (cpf.charAt(i) - '0') * weight--;
+        for (int i = 0; i < length; i++) {
+            sum += Character.getNumericValue(cpf.charAt(i)) * (length + 1 - i);
         }
-        int firstDigit = (sum * 10) % 11;
-        if (firstDigit == 10) firstDigit = 0;
-        if (firstDigit != (cpf.charAt(9) - '0')) return false;
-
-        // Validação do segundo dígito verificador
-        sum = 0;
-        weight = 11;
-        for (int i = 0; i < 10; i++) {
-            sum += (cpf.charAt(i) - '0') * weight--;
-        }
-        int secondDigit = (sum * 10) % 11;
-        if (secondDigit == 10) secondDigit = 0;
-        return secondDigit == (cpf.charAt(10) - '0');
+        int remainder = sum % 11;
+        return remainder < 2 ? 0 : 11 - remainder;
     }
 
     private static boolean validateCNPJ(String cnpj) {

@@ -12,15 +12,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { AddRoomDialogComponent } from './add-room-dialog/add-room-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
 import { RoomService } from '../../services/room.service';
-
-interface Room {
-  id?: string;
-  number: string;
-  roomTypeId: string;
-  roomTypeName: number;
-  status: string;
-  statusDisplay: string;
-}
+import { Room } from '../../models/room';
 
 @Component({
   selector: 'app-room',

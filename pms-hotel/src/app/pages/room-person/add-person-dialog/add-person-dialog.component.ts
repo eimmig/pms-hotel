@@ -7,16 +7,7 @@ import { FormGroup, FormBuilder, Validators, ReactiveFormsModule } from '@angula
 import { MatSelectModule } from '@angular/material/select';
 import { Observable } from 'rxjs';
 import { PersonService } from '../../../services/person.service';
-
-interface Person {
-  id?: string;
-  name: string;
-  document: string;
-  phoneNumber: string;
-  email: string;
-  birthDate: string;
-  documentTypeId: string;
-}
+import { Person } from '../../../models/person';
 
 interface DocumentType {
   value: number;
@@ -45,7 +36,7 @@ interface DocumentType {
 
         <mat-form-field appearance="fill">
           <mat-label>Documento</mat-label>
-          <input matInput formControlName="document" required />
+          <input matInput formControlName="document" type="number" required />
           <mat-error *ngIf="personForm.get('document')?.hasError('required')">O documento não pode estar em branco.</mat-error>
         </mat-form-field>
 
@@ -61,7 +52,7 @@ interface DocumentType {
 
         <mat-form-field appearance="fill">
           <mat-label>Telefone</mat-label>
-          <input matInput formControlName="phoneNumber" required />
+          <input matInput formControlName="phoneNumber" type="number" required />
           <mat-error *ngIf="personForm.get('phoneNumber')?.hasError('required')">O número de telefone não pode estar em branco.</mat-error>
         </mat-form-field>
 
@@ -146,7 +137,6 @@ export class AddPersonDialogComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    // Inicializa o FormGroup
     this.personForm = this.fb.group({
       name: ['', Validators.required],
       document: ['', Validators.required],
@@ -156,7 +146,6 @@ export class AddPersonDialogComponent implements OnInit {
       birthDate: ['', Validators.required]
     });
 
-    // Preenche o formulário se houver dados da pessoa
     if (this.data) {
       this.personForm.patchValue({
         name: this.data.name,
@@ -171,11 +160,11 @@ export class AddPersonDialogComponent implements OnInit {
 
   onSubmit() {
     if (this.personForm.invalid) return;
-    const personData = { ...this.personForm.value, id: this.data?.id }; // Adiciona o ID se existir
+    const personData = { ...this.personForm.value, id: this.data?.id }; 
 
     const personObservable: Observable<any> = personData.id
-      ? this.personService.editPerson(personData) // Se existir ID, edita
-      : this.personService.addPerson(personData); // Caso contrário, adiciona
+      ? this.personService.editPerson(personData) 
+      : this.personService.addPerson(personData); 
 
     personObservable.subscribe(
       (response) => {

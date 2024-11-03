@@ -93,11 +93,6 @@ public class BookingService extends GenericService<BookingModel, UUID, BookingDT
     }
 
     @Override
-    public Optional<BookingModel> getById(UUID id) {
-        return repository.findById(id);
-    }
-
-    @Override
     @Transactional
     public boolean delete(UUID id) throws RuntimeException{
         if (repository.existsById(id)) {
@@ -111,40 +106,15 @@ public class BookingService extends GenericService<BookingModel, UUID, BookingDT
     @Transactional
     public BookingModel update(UUID id, BookingDTO bookingDTO) throws RuntimeException {
         if (repository.existsById(id)) {
-            BookingModel model = convertToModel(bookingDTO, null);
-            BookingModel savedModel = repository.save(model);
-
+            BookingModel model = convertToModel(bookingDTO, id);
             try {
                 bookingRoomService.update(bookingDTO, model);
             } catch (Exception e) {
                 throw new RuntimeException("Erro ao vincular reserva. Compensação aplicada.", e);
             }
-            return savedModel;
+            return repository.save(model);
         }
         throw new RuntimeException("Item não encontrado");
-    }
-
-    public void confirmBooking(BookingRoomDTO bookingRoomDTO) throws Exception {
-        Optional<BookingModel> bookingModelOpt = bookingRepository.findById(bookingRoomDTO.bookingId());
-
-        if (bookingModelOpt.isPresent()) {
-            BookingModel bookingModel = bookingModelOpt.get();
-
-            if (!bookingModel.getStatus().equals(EBookingStatus.EXECUTED.getCode())) {
-                bookingModel.setStatus(EBookingStatus.EXECUTED.getCode());
-
-                try {
-                    bookingRepository.save(bookingModel);
-                    bookingRoomService.confirmBooking(bookingRoomDTO);
-                } catch (Exception e) {
-                    bookingModel.setStatus(EBookingStatus.PENDING.getCode());
-                    bookingRepository.save(bookingModel);
-                    throw new RuntimeException("Erro ao confirmar a reserva. Rollback realizado.", e);
-                }
-            }
-        } else {
-            throw new Exception("Reserva não encontrada para confirmação.");
-        }
     }
 
     public void cancelBooking(BookingCancelDTO bookingCancelDTO) throws Exception {
@@ -197,29 +167,28 @@ public class BookingService extends GenericService<BookingModel, UUID, BookingDT
 
         List<BookingReceive> list = new ArrayList<>();
 
-        List<RoomReceive> roomList = new ArrayList<>();
 
         for (BookingModel bm : listBm) {
+            List<RoomReceive> roomList = new ArrayList<>();
             List<BookingRoomModel> listBrm = bookingRoomService.getAllByBooking(bm);
             for (BookingRoomModel brm : listBrm) {
                 List<BookingRoomAmenitiesModel> listAmenities = bookingRoomAmenitiesRepository.findByBookingRoomId(brm.getId());
-                List<AmenityReceive> listAmeniti = new ArrayList<>();
+                List<AmenitiesDTO> listAmeniti = new ArrayList<>();
                 for (BookingRoomAmenitiesModel bra : listAmenities) {
-                    listAmeniti.add(new AmenityReceive(bra.getAmenities().getId(), bra.getAmenities().getName()));
+                    listAmeniti.add(new AmenitiesDTO(bra.getAmenities().getId(), bra.getAmenities().getName()));
                 }
                 roomList.add(new RoomReceive(brm.getRoom().getId(), brm.getRoom().getNumber(), listAmeniti));
             }
-           list.add(new BookingReceive(
+            list.add(new BookingReceive(
                     bm.getId(),
                     DateUtils.formatDate(bm.getStartDate()),
                     DateUtils.formatDate(bm.getEndDate()),
                     bm.getPerson().getId(),
                     bm.getPerson().getName(),
                     bm.getStatus(),
-                    EBookingStatus.fromCode(bm.getStatus()).name(),
+                   convertStatus(EBookingStatus.fromCode(bm.getStatus()).name()),
                     roomList
-            )
-           );
+            ));
         }
         return list;
     }
@@ -246,14 +215,14 @@ public class BookingService extends GenericService<BookingModel, UUID, BookingDT
                 bm.getPerson().getId(),
                 bm.getPerson().getName(),
                 bm.getStatus(),
-                EBookingStatus.fromCode(bm.getStatus()).name(),
+                convertStatus(EBookingStatus.fromCode(bm.getStatus()).name()),
                 roomList
         );
     }
 
     private RoomReceive convertBookingRoomModelToReceive(BookingRoomModel brm) {
-        List<AmenityReceive> amenities = bookingRoomAmenitiesRepository.findByBookingRoomId(brm.getId()).stream()
-                .map(bra -> new AmenityReceive(bra.getAmenities().getId(), bra.getAmenities().getName()))
+        List<AmenitiesDTO> amenities = bookingRoomAmenitiesRepository.findByBookingRoomId(brm.getId()).stream()
+                .map(bra -> new AmenitiesDTO(bra.getAmenities().getId(), bra.getAmenities().getName()))
                 .collect(Collectors.toList());
 
         return new RoomReceive(brm.getRoom().getId(), brm.getRoom().getNumber(), amenities);
@@ -309,5 +278,13 @@ public class BookingService extends GenericService<BookingModel, UUID, BookingDT
         }
     }
 
-
+    private String convertStatus(String status) {
+        return switch (status.toLowerCase()) {
+            case "executed" -> "EFETIVADA";
+            case "cancelled" -> "CANCELADA";
+            case "pending" -> "PENDENTE";
+            case "finished" -> "FINALIZADA";
+            default -> throw new IllegalArgumentException("Status desconhecido: " + status);
+        };
+    }
 }

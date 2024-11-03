@@ -12,15 +12,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { AddRoomTypeDialogComponent } from './add-room-type-dialog/add-room-type-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
 import { RoomTypeService } from '../../services/room-type.service';
-
-interface RoomType {
-  id?: number;
-  name: string;
-  abbreviation: string;
-  maxPersons: number;
-  rateId: string;
-  rateName: string;
-}
+import { RoomType } from '../../models/roomType';
 
 @Component({
   selector: 'app-room-type',
@@ -145,7 +137,6 @@ export class RoomTypeComponent {
           } as RoomType;
         });
     
-        // Define o dataSource com os dados mapeados
         this.dataSource.data = this.originalData;
       },
       (error) => {
@@ -170,7 +161,7 @@ export class RoomTypeComponent {
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
         this.originalData.push(result);
-        this.dataSource.data = this.originalData;  // Atualiza dataSource com o novo registro
+        this.dataSource.data = this.originalData; 
       }
     });
   }

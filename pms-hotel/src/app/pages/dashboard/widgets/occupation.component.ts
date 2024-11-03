@@ -21,16 +21,16 @@ import { DashboardService } from '../../../services/dashboard.service';
 })
 export class OccupationComponent implements OnInit {
   @ViewChild('chart', { static: true }) chart!: ElementRef;
-  chartData: InterativeChart | null = null; // Armazenando dados do gráfico
-  private chartInstance!: Chart; // Instância do gráfico
+  chartData: InterativeChart | null = null; 
+  private chartInstance!: Chart; 
 
   constructor(private dashboardService: DashboardService) { }
 
   ngOnInit() {
     this.dashboardService.getOccupancyData().subscribe({
       next: (data) => {
-        this.chartData = data; // Armazenando dados recebidos
-        this.createChart(); // Criando o gráfico com os dados recebidos
+        this.chartData = data; 
+        this.createChart();
       },
       error: (err) => {
         console.error('Erro ao buscar dados de ocupação:', err);
@@ -39,12 +39,10 @@ export class OccupationComponent implements OnInit {
   }
 
   createChart() {
-    // Se um gráfico já existir, destruímos a instância anterior
     if (this.chartInstance) {
       this.chartInstance.destroy();
     }
 
-    // Criando uma nova instância do gráfico
     this.chartInstance = new Chart(this.chart.nativeElement, {
       type: 'line',
       data: {

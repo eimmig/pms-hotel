@@ -2,20 +2,9 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
+import { Room } from '../models/room';
+import { RoomTypeIdName } from '../models/roomTypeIdName';
 
-interface Room {
-  id?: string;
-  number: string;
-  roomTypeId: string;
-  roomTypeName: number;
-  status: string;
-  statusDisplay: string;
-}
-
-interface RoomType {
-  id: string
-  name : string
-}
 
 
 @Injectable({
@@ -42,7 +31,7 @@ export class RoomService {
     return this.http.delete<void>(`${this.apiUrl}/room/${id}`);
   }
 
-  getRoomTypesSelect(): Observable<RoomType[]> {
-    return this.http.get<RoomType[]>(`${this.apiUrl}/room-types`);
+  getRoomTypesSelect(): Observable<RoomTypeIdName[]> {
+    return this.http.get<RoomTypeIdName[]>(`${this.apiUrl}/room-types`);
   }
 }

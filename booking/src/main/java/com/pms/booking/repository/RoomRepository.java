@@ -12,10 +12,13 @@ import java.util.UUID;
 public interface RoomRepository extends JpaRepository<RoomModel, UUID> {
 
     @Query(value = "SELECT r.* FROM room r " +
-            "WHERE r.id NOT IN " +
-            "(SELECT br.room_id FROM booking_room br " +
-            "WHERE br.start_date < :endDate AND br.end_date > :startDate) " +
-            "AND r.status NOT IN ('I', 'M')",
+            "WHERE r.id NOT IN (" +
+            "SELECT br.room_id FROM booking_room br " +
+            "WHERE br.start_date < :endDate " +
+            "AND br.end_date > :startDate) " +
+            "OR r.id IN (" +
+            "SELECT br.room_id FROM booking_room br " +
+            "WHERE br.booking_id = :bookingId)",
             nativeQuery = true)
-    List<RoomModel> findAllWithDate(LocalDate startDate, LocalDate endDate);
+    List<RoomModel> findAllWithDate(LocalDate startDate, LocalDate endDate, UUID bookingId);
 }

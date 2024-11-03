@@ -11,16 +11,7 @@ import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { MatDialog } from '@angular/material/dialog';
 import { PersonService } from '../../../services/person.service';
-
-interface Person {
-  id?: string;
-  name: string;
-  document: string;
-  phoneNumber: string;
-  email: string;
-  birthDate: string;
-  documentTypeId: string;
-}
+import { Person } from '../../../models/person';
 
 @Component({
   selector: 'app-to-checkin',
